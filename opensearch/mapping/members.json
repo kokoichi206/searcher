@@ -3,6 +3,7 @@
     "properties": {
       "birthday": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",
@@ -12,6 +13,7 @@
       },
       "blog_url": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",
@@ -21,6 +23,7 @@
       },
       "blood_type": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",
@@ -30,6 +33,7 @@
       },
       "generation": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",
@@ -39,6 +43,7 @@
       },
       "height": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",
@@ -51,6 +56,7 @@
       },
       "img_url": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",
@@ -60,6 +66,7 @@
       },
       "name": {
         "type": "text",
+        "term_vector": "with_positions_offsets",
         "fields": {
           "keyword": {
             "type": "keyword",

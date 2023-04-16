@@ -41,15 +41,30 @@ GET /members/_search
     "name"
   ],
   "query": {
-    "match": {
-      "name": "加藤"
+    "bool": {
+      "should": [
+        {
+          "match_phrase": {
+            "name": "加藤"
+          }
+        },
+        {
+          "match": {
+            "name": "加藤"
+          }
+        }
+      ],
+      "minimum_should_match": 1
     }
   },
   "highlight": {
     "fields": {
       "name": {}
-    }
+    },
+    "type": "fvh"
   }
 }
 ```
 
+- fvh で、連続する `<em>` を1つにまとめている
+  - `"term_vector": "with_positions_offsets"` が必要
