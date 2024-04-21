@@ -2,7 +2,7 @@ version: '3'
 
 services:
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:latest
+    image: opensearchproject/opensearch-dashboards:2.13.0
     container_name: opensearch-dashboards
     environment:
       OPENSEARCH_HOSTS: "https://opensearch:9200"
@@ -26,6 +26,7 @@ services:
       - http.host=0.0.0.0
       - transport.host=127.0.0.1
       - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=90@A1qwe#Pa_q
     ulimits:
       memlock:
         soft: -1
