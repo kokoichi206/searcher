@@ -1,0 +1,55 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "simple_query_string": {
+            "query": "{{#query}}\"{{.}}\"{{/query}}",
+            "fields": [
+              "text",
+              "text.ngram"
+            ],
+            "default_operator": "and"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "_source": [
+    "code",
+    "blog_code",
+    "blog_title",
+    "member_name",
+    "text",
+    "name",
+    "date"
+  ],
+  "highlight": {
+    "fields": {
+      "text": {
+        "matched_fields": [
+          "text",
+          "text.ngram"
+        ], 
+        "type":"fvh",
+        "fragment_size": 50,
+        "number_of_fragments": 2
+      }
+    }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "desc"
+      }
+    },
+    {
+      "date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "from": {{from}},
+  "size": {{size}}
+}
