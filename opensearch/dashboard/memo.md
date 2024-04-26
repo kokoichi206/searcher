@@ -69,51 +69,7 @@ curl -XGET "https://localhost:9200/pieen/_search" -H 'Content-Type: application/
 ```
 
 
-
-
-```
-POST /pieen3/_doc/afaf_id
-```
-
-
-``` 
-GET /pieen3/_search
-{
-  "_source": [
-    "name"
-  ],
-  "query": {
-    "match": {
-      "blood_type": "A"
-    }
-  },
-  "highlight": {
-    "fields": {
-      "blood_type": {}
-    }
-  }
-}
-
-
-GET /pieen3/_search
-{
-  "_source": [
-    "name"
-  ],
-  "query": {
-    "match": {
-      "name": "加藤"
-    }
-  },
-  "highlight": {
-    "fields": {
-      "blood_type": {}
-    }
-  }
-}
-
-
-
+``` json
 GET /pieen4/_search
 {
   "_source": [
@@ -145,18 +101,24 @@ GET /pieen4/_search
 }
 ```
 
+fvh: 隣接する em は括るようにしたりできる。
+
+- should は or 演算の意味
+  - minimum なんかを設定させるべき
+  - minimum_should_match はつけておいて損がない
 
 スタンダードの analyzer 
 
-```
+``` json
 GET /_analyze
 {
   "text": [
-    "すたんだーどの analyzer"
+    "第１回 Elastisearch 入門 インデックスを設計する際に知っておくべき事"
     ]
 }
+```
 
-
+``` json
 GET /_analyze
 {
   "text": [
@@ -166,10 +128,102 @@ GET /_analyze
 }
 ```
 
-fvh: 隣接する em は括るようにしたりできる。
+## comments
+
+```
+GET /comments/_search
+{
+  "_source": [
+    "name",
+    "member_name",
+    "blog_title"
+  ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match_phrase": {
+            "text": "本当に本当に"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "highlight": {
+    "fields": {
+      "text": {}
+    },
+    "type": "fvh"
+  }
+}
+```
 
 
-- should は or 演算の意味
-  - minimum なんかを設定させるべき
-  - minimum_should_match はつけておいて損がない
+```
+POST _scripts/comment_query
+{
+  "script": {
+    "lang": "mustache",
+    "source": """
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "simple_query_string": {
+            "query": "{{#query}}\"{{.}}\"{{/query}}",
+            "fields": [
+              "text",
+              "text.ngram"
+            ],
+            "default_operator": "and"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "_source": [
+    "code",
+    "blog_code",
+    "blog_title",
+    "member_name",
+    "text",
+    "name",
+    "date"
+  ],
+  "highlight": {
+    "fields": {
+      "text": {
+        "matched_fields": [
+          "text",
+          "text.ngram"
+        ], 
+        "type":"fvh",
+        "fragment_size": 50,
+        "number_of_fragments": 2
+      }
+    }
+  },
+  "sort": [
+    {
+      "_score": {
+        "order": "desc"
+      }
+    },
+    {
+      "date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "from": {{from}},
+  "size": {{size}}
+}
 
+    """,
+    "params": {}
+  }
+}
+```
