@@ -23,3 +23,13 @@ type Blog struct {
 	Text      string `json:"text"`
 	Title     string `json:"title"`
 }
+
+type Comment struct {
+	Code       string `json:"code"`
+	BlogCode   string `json:"blog_code"`
+	BlogTitle  string `json:"blog_title"`
+	MemberName string `json:"member_name"`
+	Text       string `json:"text"`
+	Name       string `json:"name"`
+	Date       string `json:"date"`
+}

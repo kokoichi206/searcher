@@ -54,21 +54,43 @@ func main() {
 		fmt.Printf("len(blogs): %v\n", len(blogs))
 
 		for _, b := range blogs {
-			if err := client.IndexBlog(
-				&model.Blog{
-					ArtiCode:  b.Code,
-					Cate:      b.Cate,
-					Code:      b.Code,
-					Date:      b.Timestamp,
-					EndTime:   b.EndTime,
-					Link:      b.Link,
-					Member:    m.Name,
-					StartTime: b.StartTime,
-					Text:      b.Content,
-					Title:     b.Title,
-				},
-			); err != nil {
-				log.Fatalf("failed to index blog: %v", err)
+			// if err := client.IndexBlog(
+			// 	&model.Blog{
+			// 		ArtiCode:  b.Code,
+			// 		Cate:      b.Cate,
+			// 		Code:      b.Code,
+			// 		Date:      b.Timestamp,
+			// 		EndTime:   b.EndTime,
+			// 		Link:      b.Link,
+			// 		Member:    m.Name,
+			// 		StartTime: b.StartTime,
+			// 		Text:      b.Content,
+			// 		Title:     b.Title,
+			// 	},
+			// ); err != nil {
+			// 	log.Fatalf("failed to index blog: %v", err)
+			// }
+			comments, err := db.SelectAllComments(ctx, b.Code)
+			if err != nil {
+				log.Fatalf("failed to select all comments: %v", err)
+			}
+
+			for _, c := range comments {
+				// fmt.Printf("c.Code: %v\n", c.Code)
+				// fmt.Printf("c.Name: %v\n", c.Name)
+				// fmt.Printf("c.Content: %v\n", c.Content)
+
+				if err := client.IndexComment(&model.Comment{
+					Code:       c.Code,
+					BlogCode:   c.BlogCode,
+					BlogTitle:  b.Title,
+					MemberName: m.Name,
+					Text:       c.Content,
+					Name:       c.Name,
+					Date:       c.Timestamp,
+				}); err != nil {
+					log.Fatalf("failed to index comment: %v", err)
+				}
 			}
 		}
 	}
